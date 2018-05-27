@@ -1,0 +1,39 @@
+movierater:
+    image: tomcat
+    ports:
+        - "8080:8080"
+    volumes:
+        - ./movierater.war:/usr/local/tomcat/webapps/movierater.war
+    expose:
+        - "8080"
+    links:
+        - db
+        - rabbit
+    environment:
+        SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/test
+    
+reviewchecker:
+    image: tomcat
+    ports:
+        - "8081:8080"
+    volumes:
+        - ./reviewchecker-0.0.1.war:/usr/local/tomcat/webapps/reviewchecker-0.0.1.war
+    links:
+        - rabbit
+   
+db:
+    container_name: mongo
+    image: mongo:latest
+    restart: always
+    ports:
+        - "27017:27017"
+  
+rabbit:
+    image: "rabbitmq:3-management"
+    expose:
+        - "5672"
+    hostname: localhost
+    environment:
+        #RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+        RABBITMQ_DEFAULT_USER : guest
+        RABBITMQ_DEFAULT_PASS : guest
